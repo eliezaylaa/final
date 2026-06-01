@@ -24,25 +24,13 @@ const register = async (req, res) => {
       return res.json({ error: "Incorrect password syntax" });
     }
     const hashed = await bcrypt.hash(password, 12);
-    const newUser = await pool.query(
-      "INSERT INTO users(email,password,full_name) VALUES ($1, $2, $3) RETURNING id, email, full_name, role",
+    await pool.query(
+      "INSERT INTO users(email,password,full_name) VALUES ($1, $2, $3)",
       [email, hashed, full_name],
     );
-    const access = jwt.sign(
-      { id: newUser.rows[0].id, role: newUser.rows[0].role },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" },
-    );
-    const refresh = jwt.sign(
-      { id: newUser.rows[0].id },
-      process.env.REFRESH_SECRET,
-      { expiresIn: "7d" },
-    );
-    await pool.query(
-      "INSERT INTO refresh_token (user_id,token) VALUES ($1, $2)",
-      [newUser.rows[0].id, refresh],
-    );
-    return res.json({ user: newUser.rows[0], access, refresh });
+
+    req.body = { email, password };
+    return login(req, res);
   } catch (error) {
     console.error(error);
     res.json({ error: "Registation error" });
@@ -66,12 +54,12 @@ const login = async (req, res) => {
     const access = jwt.sign(
       { id: user.rows[0].id, role: user.rows[0].role },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "30m" },
     );
     const refresh = jwt.sign(
       { id: user.rows[0].id },
       process.env.REFRESH_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "14d" },
     );
     await pool.query(
       "INSERT INTO refresh_token(user_id,token) VALUES ($1,$2)",
@@ -83,7 +71,6 @@ const login = async (req, res) => {
         id: user.rows[0].id,
         email: user.rows[0].email,
         full_name: user.rows[0].full_name,
-        role: user.rows[0].role,
       },
       access,
       refresh,
