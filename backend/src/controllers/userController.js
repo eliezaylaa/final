@@ -12,4 +12,20 @@ const GetAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { GetAllUsers };
+const GetUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await pool.query(
+      "SELECT id, full_name, email, role, salary, is_active, created_at FROM users where id = $1",
+      [id],
+    );
+    if (user.rows.lengh == 0) {
+      return res.json({ error: "User not found" });
+    }
+    return res.json({ user: user.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Get User error" });
+  }
+};
+
+module.exports = { GetAllUsers, GetUser };
