@@ -80,4 +80,35 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const refreshToken = async (req, res) => {
+  try {
+    const { refresh } = req.body;
+    if (!refresh) {
+      return res.json({ error: "No refresh token" });
+    }
+    const decrypt = jwt.verify(refresh, process.env.REFRESH_SECRET);
+
+    const tokenCheck = await pool.query(
+      "SELECT * FROM refresh_token WHERE user_id = $1 AND token = $2",
+      [decrypt.id, refresh],
+    );
+    if (tokenCheck.rows.length == 0) {
+      return res.json({ error: "Invalid refresh token" });
+    }
+
+    const user = await pool.query("SELECT id,role from users WHERE id = $1", [
+      decrypt.id,
+    ]);
+
+    const access = jwt.sign(
+      { id: user.rows[0].id, role: user.rows[0].role },
+      process.env.JWT_SECRET,
+      { expiresIn: "30m" },
+    );
+    return res.json({ access });
+  } catch (error) {
+    return res.json({ error: "Refresh token error" });
+  }
+};
+
+module.exports = { register, login, refreshToken };
