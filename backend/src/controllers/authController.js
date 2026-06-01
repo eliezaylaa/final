@@ -48,4 +48,49 @@ const register = async (req, res) => {
     res.json({ error: "Registation error" });
   }
 };
-module.exports = { register };
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.json({ error: "All fields required" });
+    const user = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    if (user.rows.length == 0) {
+      return res.json({ error: "Invalid credentials" });
+    }
+    const valid = await bcrypt.compare(password, user.rows[0].password);
+    if (!valid) {
+      return res.json({ error: "Invalid credentiald" });
+    }
+    const access = jwt.sign(
+      { id: user.rows[0].id, role: user.rows[0].role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" },
+    );
+    const refresh = jwt.sign(
+      { id: user.rows[0].id },
+      process.env.REFRESH_SECRET,
+      { expiresIn: "7d" },
+    );
+    await pool.query(
+      "INSERT INTO refresh_token(user_id,token) VALUES ($1,$2)",
+      [user.rows[0].id, refresh],
+    );
+
+    return res.json({
+      user: {
+        id: user.rows[0].id,
+        email: user.rows[0].email,
+        full_name: user.rows[0].full_name,
+        role: user.rows[0].role,
+      },
+      access,
+      refresh,
+    });
+  } catch (error) {
+    res.json({ error: "Login error" });
+  }
+};
+
+module.exports = { register, login };

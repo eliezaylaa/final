@@ -11,7 +11,7 @@ created_at TIMESTAMP DEFAULT NOW()
 
 CREATE TABLE IF NOT EXISTS shifts(
   id SERIAL PRIMARY KEY,
-user_id INT REFERENCES users(id),
+user_id INT REFERENCES users,
 date DATE,
 start_time TIME,
 end_time TIME,
