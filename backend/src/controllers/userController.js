@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 const GetAllUsers = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ const GetUser = async (req, res) => {
       "SELECT id, full_name, email, role, salary, is_active, created_at FROM users where id = $1",
       [id],
     );
-    if (user.rows.lengh == 0) {
+    if (user.rows.length == 0) {
       return res.json({ error: "User not found" });
     }
     return res.json({ user: user.rows[0] });
@@ -27,5 +28,36 @@ const GetUser = async (req, res) => {
     return res.json({ error: "Get User error" });
   }
 };
+const addUser = async (req, res) => {
+  try {
+    const { full_name, email, password, role, salary } = req.body;
+    if (!full_name || !email || !password) {
+      return res.json({ error: "All fields are required" });
+    }
+    if (!validator.isEmail(email)) {
+      return res.json({ error: "Incorrect email syntax" });
+    }
+    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
 
-module.exports = { GetAllUsers, GetUser };
+    if (userCheck.rows.length > 0) {
+      return res.json({ error: "User already exists" });
+    }
+    if (!validator.isStrongPassword(password)) {
+      return res.json({ error: "Incorrect password syntax" });
+    }
+    const hashed = await bcrypt.hash(password, 12);
+
+    const newUser = await pool.query(
+      "INSERT INTO users (full_name, email, password, role, salary) VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, email, role, salary",
+      [full_name, email, hashed, role, salary],
+    );
+
+    return res.json({ user: newUser.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Add user error" });
+  }
+};
+
+module.exports = { GetAllUsers, GetUser, addUser };
