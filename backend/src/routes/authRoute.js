@@ -4,6 +4,7 @@ const {
   register,
   login,
   refreshToken,
+  logout,
 } = require("../controllers/authController");
 
 const { authenticate } = require("../middleware/auth");
@@ -11,5 +12,6 @@ const { authenticate } = require("../middleware/auth");
 router.post("/register", register);
 router.post("/login", login);
 router.post("/refresh", refreshToken);
+router.post("/logout", logout);
 
 module.exports = router;

@@ -111,4 +111,17 @@ const refreshToken = async (req, res) => {
   }
 };
 
-module.exports = { register, login, refreshToken };
+const logout = async (req, res) => {
+  try {
+    const { refresh } = req.body;
+    if (!refresh) {
+      return res.json({ error: "Refresh token requirea" });
+    }
+    await pool.query("DELETE FROM refresh_token WHERE token = $1", [refresh]);
+    return res.json({ message: "Logged out succesfully" });
+  } catch (error) {
+    return res.json({ error: "Logout error" });
+  }
+};
+
+module.exports = { register, login, refreshToken, logout };
