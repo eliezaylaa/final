@@ -99,4 +99,22 @@ const updateSalary = async (req, res) => {
     return res.json({ error: "Update salary error" });
   }
 };
-module.exports = { GetAllUsers, GetUser, addUser, updateUser, updateSalary };
+const fireUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await pool.query(
+      "UPDATE users SET is_active = false WHERE id = $1 RETURNING id, full_name, is_active",
+      [id],
+    );
+
+    if (user.rows.length == 0) {
+      return res.json({ error: "User not found" });
+    }
+
+    return res.json({ message: "User fired", user: user.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Fire user error" });
+  }
+};
+module.exports = { GetAllUsers, GetUser, addUser, updateUser, updateSalary,fireUser };

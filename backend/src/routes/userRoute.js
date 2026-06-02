@@ -6,6 +6,7 @@ const {
   addUser,
   updateUser,
   updateSalary,
+  fireUser,
 } = require("../controllers/userController");
 const { authenticate, admin, adminormanager } = require("../middleware/auth");
 
@@ -14,4 +15,5 @@ router.get("/:id", authenticate, adminormanager, GetUser);
 router.post("/", authenticate, admin, addUser);
 router.put("/:id", authenticate, admin, updateUser);
 router.put("/:id/salary", authenticate, adminormanager, updateSalary);
+router.put("/:id/fire", authenticate, adminormanager, fireUser);
 module.exports = router;
