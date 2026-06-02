@@ -10,6 +10,8 @@ const userRoute = require("./src/routes/userRoute");
 app.use("/users", userRoute);
 const shiftRoute = require("./src/routes/shiftRoute");
 app.use("/shifts", shiftRoute);
+const productRoute = require("./src/routes/productRoute");
+app.use("/products", productRoute);
 
 app.get("/", (req, res) => {
   res.send("Api is running");
