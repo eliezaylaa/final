@@ -32,4 +32,37 @@ const createInvoice = async (req, res) => {
     return res.json({ error: "Create invoice error" });
   }
 };
-module.exports = { createInvoice };
+const confirmPayment = async (req, res) => {
+  try {
+    const { payment_intent_id } = req.body;
+    const customer_id = req.user.id;
+    const paymentIntent =
+      await stripe.paymentIntents.retrieve(payment_intent_id);
+    if (paymentIntent.status != "succeeded") {
+      return res.json({ error: "Payment not successful" });
+    }
+    const items = JSON.parse(paymentIntent.metadata.items);
+    const total = paymentIntent.amount / 100;
+    const invoice = await pool.query(
+      "INSERT INTO invoices (customer_id, total, payment_method, is_paid, paid_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *",
+      [customer_id, total, "stripe", true],
+    );
+
+    const invoice_id = invoice.rows[0].id;
+    for (const item of items) {
+      const product = await pool.query(
+        "SELECT price FROM products WHERE id = $1",
+        [item.product_id],
+      );
+      await pool.query(
+        "INSERT INTO invoice_items (invoice_id, product_id, quantity, item_price) VALUES ($1, $2, $3, $4)",
+        [invoice_id, item.product_id, item.quantity, product.rows[0].price],
+      );
+    }
+    return res.json({ invoice: invoice.rows[0] });
+  } catch (error) {
+    console.error(error);
+    return res.json({ error: "Confirm payment error" });
+  }
+};
+module.exports = { createInvoice, confirmPayment };
