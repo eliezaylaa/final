@@ -37,4 +37,22 @@ const addProduct = async (req, res) => {
     return res.json({ error: "Add product error" });
   }
 };
-module.exports = { GetAllProducts, GetProduct, addProduct };
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price } = req.body;
+
+    const product = await pool.query(
+      "UPDATE products SET name = $1, price = $2 WHERE id = $3 RETURNING *",
+      [name, price, id],
+    );
+
+    if (product.rows.length == 0)
+      return res.json({ error: "Product not found" });
+
+    return res.json({ product: product.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Update product error" });
+  }
+};
+module.exports = { GetAllProducts, GetProduct, addProduct, updateProduct };
