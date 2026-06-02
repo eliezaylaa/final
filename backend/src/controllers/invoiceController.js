@@ -65,4 +65,14 @@ const confirmPayment = async (req, res) => {
     return res.json({ error: "Confirm payment error" });
   }
 };
-module.exports = { createInvoice, confirmPayment };
+const GetAllInvoices = async (req, res) => {
+  try {
+    const invoices = await pool.query(
+      "SELECT i.*, u.full_name FROM invoices i JOIN users u ON u.id = i.customer_id ORDER BY i.created_at ASC",
+    );
+    return res.json({ invoices: invoices.rows });
+  } catch (error) {
+    return res.json({ error: "Get invoices error" });
+  }
+};
+module.exports = { createInvoice, confirmPayment, GetAllInvoices };
