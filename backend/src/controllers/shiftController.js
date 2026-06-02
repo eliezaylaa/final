@@ -28,5 +28,22 @@ const GetShift = async (req, res) => {
     return res.json({ error: "Get shift error" });
   }
 };
+const addShift = async (req, res) => {
+  try {
+    const { user_id, date, start_time, end_time } = req.body;
 
-module.exports = { GetAllShifts, GetShift };
+    if (!user_id || !date || !start_time || !end_time) {
+      return res.json({ error: "All fields are required" });
+    }
+    const shift = await pool.query(
+      "INSERT INTO shifts (user_id, date, start_time, end_time) VALUES ($1, $2, $3, $4) RETURNING *",
+      [user_id, date, start_time, end_time],
+    );
+
+    return res.json({ shift: shift.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Create shift error" });
+  }
+};
+
+module.exports = { GetAllShifts, GetShift, addShift };
