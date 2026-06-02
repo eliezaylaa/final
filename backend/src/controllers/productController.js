@@ -21,4 +21,20 @@ const GetProduct = async (req, res) => {
     return res.json({ error: "Get product error" });
   }
 };
-module.exports = { GetAllProducts, GetProduct };
+const addProduct = async (req, res) => {
+  try {
+    const { name, price } = req.body;
+
+    if (!name || !price) return res.json({ error: "All fields required" });
+
+    const product = await pool.query(
+      "INSERT INTO products (name, price) VALUES ($1, $2) RETURNING *",
+      [name, price],
+    );
+
+    return res.json({ product: product.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Add product error" });
+  }
+};
+module.exports = { GetAllProducts, GetProduct, addProduct };
