@@ -45,5 +45,21 @@ const addShift = async (req, res) => {
     return res.json({ error: "Create shift error" });
   }
 };
+const updateShift = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date, start_time, end_time } = req.body;
+    const shift = await pool.query(
+      "UPDATE shifts SET date = $1, start_time = $2, end_time = $3 WHERE id = $4 RETURNING *",
+      [date, start_time, end_time, id],
+    );
+    if (shift.rows.length == 0) {
+      return res.json({ error: "Shift not found" });
+    }
 
-module.exports = { GetAllShifts, GetShift, addShift };
+    return res.json({ shift: shift.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Update shift error" });
+  }
+};
+module.exports = { GetAllShifts, GetShift, addShift, updateShift };
