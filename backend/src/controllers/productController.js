@@ -55,4 +55,19 @@ const updateProduct = async (req, res) => {
     return res.json({ error: "Update product error" });
   }
 };
-module.exports = { GetAllProducts, GetProduct, addProduct, updateProduct };
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM products WHERE id = $1", [id]);
+    return res.json({ message: "Product deleted" });
+  } catch (error) {
+    return res.json({ error: "Delete product error" });
+  }
+};
+module.exports = {
+  GetAllProducts,
+  GetProduct,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+};
