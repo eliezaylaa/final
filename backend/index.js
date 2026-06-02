@@ -8,6 +8,8 @@ const authRoute = require("./src/routes/authRoute");
 app.use("/auth", authRoute);
 const userRoute = require("./src/routes/userRoute");
 app.use("/users", userRoute);
+const shiftRoute = require("./src/routes/shiftRoute");
+app.use("/shifts", shiftRoute);
 
 app.get("/", (req, res) => {
   res.send("Api is running");
