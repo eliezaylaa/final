@@ -73,4 +73,37 @@ const deleteShift = async (req, res) => {
     return res.json({ error: "Delete shift error" });
   }
 };
-module.exports = { GetAllShifts, GetShift, addShift, updateShift, deleteShift };
+const checkIn = async (req, res) => {
+  try {
+    const user_id = req.user.id;
+    await pool.query(
+      "UPDATE shifts SET check_in = NOW() WHERE user_id = $1 AND date = CURRENT_DATE",
+      [user_id],
+    );
+    return res.json({ message: "Checked in" });
+  } catch (error) {
+    return res.json({ error: "Check in error" });
+  }
+};
+
+const checkOut = async (req, res) => {
+  try {
+    const user_id = req.user.id;
+    await pool.query(
+      "UPDATE shifts SET check_out = NOW() WHERE user_id = $1 AND date = CURRENT_DATE",
+      [user_id],
+    );
+    return res.json({ message: "Checked out" });
+  } catch (error) {
+    return res.json({ error: "Check out error" });
+  }
+};
+module.exports = {
+  GetAllShifts,
+  GetShift,
+  addShift,
+  updateShift,
+  deleteShift,
+  checkIn,
+  checkOut,
+};

@@ -15,6 +15,8 @@ user_id INT REFERENCES users,
 date DATE,
 start_time TIME,
 end_time TIME,
+check_in TIMESTAMP,
+check_out TIMESTAMP,
 created_at TIMESTAMP DEFAULT NOW()
 
 
