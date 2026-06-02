@@ -4,10 +4,13 @@ const {
   GetAllUsers,
   GetUser,
   addUser,
+  updateUser,
 } = require("../controllers/userController");
-const { authenticate, admin } = require("../middleware/auth");
+const { authenticate, admin, adminormanager } = require("../middleware/auth");
 
 router.get("/", authenticate, admin, GetAllUsers);
-router.get("/:id", authenticate, GetUser);
+router.get("/:id", authenticate, adminormanager, GetUser);
 router.post("/", authenticate, admin, addUser);
+router.put("/:id", authenticate, admin, updateUser);
+
 module.exports = router;

@@ -59,5 +59,26 @@ const addUser = async (req, res) => {
     return res.json({ error: "Add user error" });
   }
 };
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { full_name, email, role, salary } = req.body;
 
-module.exports = { GetAllUsers, GetUser, addUser };
+    const user = await pool.query(
+      "UPDATE users SET full_name = $1, email = $2, role = $3, salary = $4 WHERE id = $5 RETURNING id, full_name, email, role, salary",
+      [full_name, email, role, salary, id],
+    );
+
+    if (user.rows.length == 0) {
+      return res.json({ error: "User not found" });
+    }
+
+    await pool.query("DELETE FROM refresh_token WHERE user_id = $1", [id]);
+
+    return res.json({ user: user.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Update user errpr" });
+  }
+};
+
+module.exports = { GetAllUsers, GetUser, addUser, updateUser };
