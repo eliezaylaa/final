@@ -7,6 +7,7 @@ const {
   updateUser,
   updateSalary,
   fireUser,
+  deleteUser,
 } = require("../controllers/userController");
 const { authenticate, admin, adminormanager } = require("../middleware/auth");
 
@@ -16,4 +17,5 @@ router.post("/", authenticate, admin, addUser);
 router.put("/:id", authenticate, admin, updateUser);
 router.put("/:id/salary", authenticate, adminormanager, updateSalary);
 router.put("/:id/fire", authenticate, adminormanager, fireUser);
+router.delete("/:id", authenticate, admin, deleteUser);
 module.exports = router;

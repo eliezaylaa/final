@@ -117,4 +117,24 @@ const fireUser = async (req, res) => {
     return res.json({ error: "Fire user error" });
   }
 };
-module.exports = { GetAllUsers, GetUser, addUser, updateUser, updateSalary,fireUser };
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query("DELETE FROM users WHERE id = $1", [id]);
+
+    return res.json({ message: "User deleted" });
+  } catch (error) {
+    return res.json({ error: "Delete user error" });
+  }
+};
+
+module.exports = {
+  GetAllUsers,
+  GetUser,
+  addUser,
+  updateUser,
+  updateSalary,
+  fireUser,
+  deleteUser,
+};
