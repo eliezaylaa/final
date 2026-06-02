@@ -75,4 +75,18 @@ const GetAllInvoices = async (req, res) => {
     return res.json({ error: "Get invoices error" });
   }
 };
-module.exports = { createInvoice, confirmPayment, GetAllInvoices };
+const GetInvoice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const invoice = await pool.query("SELECT * FROM invoices WHERE id = $1", [
+      id,
+    ]);
+    if (invoice.rows.length == 0)
+      return res.json({ error: "Invoice not found" });
+
+    return res.json({ invoice: invoice.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Get invoice error" });
+  }
+};
+module.exports = { createInvoice, confirmPayment, GetAllInvoices, GetInvoice };
