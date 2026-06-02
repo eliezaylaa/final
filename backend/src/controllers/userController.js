@@ -80,5 +80,23 @@ const updateUser = async (req, res) => {
     return res.json({ error: "Update user errpr" });
   }
 };
+const updateSalary = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { salary } = req.body;
 
-module.exports = { GetAllUsers, GetUser, addUser, updateUser };
+    const user = await pool.query(
+      "UPDATE users SET salary = $1 WHERE id = $2 RETURNING id, full_name, salary",
+      [salary, id],
+    );
+
+    if (user.rows.length == 0) {
+      return res.json({ error: "User not found" });
+    }
+
+    return res.json({ user: user.rows[0] });
+  } catch (error) {
+    return res.json({ error: "Update salary error" });
+  }
+};
+module.exports = { GetAllUsers, GetUser, addUser, updateUser, updateSalary };
