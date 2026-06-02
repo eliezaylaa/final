@@ -89,4 +89,19 @@ const GetInvoice = async (req, res) => {
     return res.json({ error: "Get invoice error" });
   }
 };
-module.exports = { createInvoice, confirmPayment, GetAllInvoices, GetInvoice };
+const deleteInvoice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM invoices WHERE id = $1", [id]);
+    return res.json({ message: "Invoice deleted" });
+  } catch (error) {
+    return res.json({ error: "Delete invoice error" });
+  }
+};
+module.exports = {
+  createInvoice,
+  confirmPayment,
+  GetAllInvoices,
+  GetInvoice,
+  deleteInvoice,
+};
