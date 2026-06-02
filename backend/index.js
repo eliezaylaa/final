@@ -12,6 +12,8 @@ const shiftRoute = require("./src/routes/shiftRoute");
 app.use("/shifts", shiftRoute);
 const productRoute = require("./src/routes/productRoute");
 app.use("/products", productRoute);
+const invoiceRoute = require("./src/routes/invoiceRoute");
+app.use("/invoices", invoiceRoute);
 
 app.get("/", (req, res) => {
   res.send("Api is running");
