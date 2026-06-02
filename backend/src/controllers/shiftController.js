@@ -62,4 +62,15 @@ const updateShift = async (req, res) => {
     return res.json({ error: "Update shift error" });
   }
 };
-module.exports = { GetAllShifts, GetShift, addShift, updateShift };
+const deleteShift = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query("DELETE FROM shifts WHERE id = $1", [id]);
+
+    return res.json({ message: "Shift deleted" });
+  } catch (error) {
+    return res.json({ error: "Delete shift error" });
+  }
+};
+module.exports = { GetAllShifts, GetShift, addShift, updateShift, deleteShift };
