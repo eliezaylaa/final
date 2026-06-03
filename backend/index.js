@@ -14,6 +14,8 @@ const productRoute = require("./src/routes/productRoute");
 app.use("/products", productRoute);
 const invoiceRoute = require("./src/routes/invoiceRoute");
 app.use("/invoices", invoiceRoute);
+const kpiRoute = require("./src/routes/kpiRoute");
+app.use("/kpi", kpiRoute);
 
 app.get("/", (req, res) => {
   res.send("Api is running");
