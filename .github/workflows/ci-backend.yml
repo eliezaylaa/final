@@ -1,0 +1,31 @@
+name: CI Backend
+on:
+  push:
+    branches: [dev, main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Lint
+        run: |
+          cd backend
+          npx eslint src/
+
+      - name: Build check
+        run: |
+          cd backend
+          node --check index.js
