@@ -5,7 +5,7 @@ const GetAllProducts = async (req, res) => {
     const products = await pool.query("SELECT * FROM products");
     return res.json({ products: products.rows });
   } catch (error) {
-    return res.json({ error: "Get products error" });
+    return res.json({ error: error.message });
   }
 };
 const GetProduct = async (req, res) => {
@@ -18,7 +18,7 @@ const GetProduct = async (req, res) => {
       return res.json({ error: "Product not found" });
     return res.json({ product: product.rows[0] });
   } catch (error) {
-    return res.json({ error: "Get product error" });
+    return res.json({ error: error.message });
   }
 };
 const addProduct = async (req, res) => {
@@ -34,7 +34,7 @@ const addProduct = async (req, res) => {
 
     return res.json({ product: product.rows[0] });
   } catch (error) {
-    return res.json({ error: "Add product error" });
+    return res.json({ error: error.message });
   }
 };
 const updateProduct = async (req, res) => {
@@ -52,7 +52,7 @@ const updateProduct = async (req, res) => {
 
     return res.json({ product: product.rows[0] });
   } catch (error) {
-    return res.json({ error: "Update product error" });
+    return res.json({ error: error.message });
   }
 };
 const deleteProduct = async (req, res) => {
@@ -61,7 +61,7 @@ const deleteProduct = async (req, res) => {
     await pool.query("DELETE FROM products WHERE id = $1", [id]);
     return res.json({ message: "Product deleted" });
   } catch (error) {
-    return res.json({ error: "Delete product error" });
+    return res.json({ error: error.message });
   }
 };
 module.exports = {

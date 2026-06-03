@@ -17,5 +17,10 @@
   },
   "author": "",
   "license": "ISC",
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0"
+  }
 }

@@ -9,7 +9,7 @@ const authenticate = (req, res, next) => {
     req.user = verification;
     next();
   } catch (error) {
-    return res.json({ error: "Inavld token" });
+    return res.json({ error: error.message });
   }
 };
 

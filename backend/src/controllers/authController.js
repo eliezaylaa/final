@@ -33,7 +33,7 @@ const register = async (req, res) => {
     return login(req, res);
   } catch (error) {
     console.error(error);
-    res.json({ error: "Registation error" });
+    res.json({ error: error.message });
   }
 };
 
@@ -76,7 +76,7 @@ const login = async (req, res) => {
       refresh,
     });
   } catch (error) {
-    res.json({ error: "Login error" });
+    res.json({ error: error.message });
   }
 };
 
@@ -107,7 +107,7 @@ const refreshToken = async (req, res) => {
     );
     return res.json({ access });
   } catch (error) {
-    return res.json({ error: "Refresh token error" });
+    return res.json({ error: error.message });
   }
 };
 
@@ -120,7 +120,7 @@ const logout = async (req, res) => {
     await pool.query("DELETE FROM refresh_token WHERE token = $1", [refresh]);
     return res.json({ message: "Logged out succesfully" });
   } catch (error) {
-    return res.json({ error: "Logout error" });
+    return res.json({ error: error.message });
   }
 };
 

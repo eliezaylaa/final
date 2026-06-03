@@ -30,7 +30,7 @@ const getWeeklyAttendance = async (req, res) => {
     });
     return res.json({ attendance: Object.values(result) });
   } catch (error) {
-    return res.json({ error: "Attendance error" });
+    return res.json({ error: error.message });
   }
 };
 
@@ -48,7 +48,7 @@ const getStaffHours = async (req, res) => {
     });
     return res.json({ hours: Object.values(result) });
   } catch (error) {
-    return res.json({ error: "Staff hours error" });
+    return res.json({ error: error.message });
   }
 };
 
@@ -71,7 +71,7 @@ const getPayrollEstimation = async (req, res) => {
     });
     return res.json({ payroll: Object.values(result) });
   } catch (error) {
-    return res.json({ error: "Payroll error" });
+    return res.json({ error: error.message });
   }
 };
 

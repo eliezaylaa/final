@@ -29,7 +29,7 @@ const createInvoice = async (req, res) => {
 
     return res.json({ client_secret: paymentIntent.client_secret });
   } catch (error) {
-    return res.json({ error: "Create invoice error" });
+    return res.json({ error: error.message });
   }
 };
 const confirmPayment = async (req, res) => {
@@ -62,7 +62,7 @@ const confirmPayment = async (req, res) => {
     return res.json({ invoice: invoice.rows[0] });
   } catch (error) {
     console.error(error);
-    return res.json({ error: "Confirm payment error" });
+    return res.json({ error: error.message });
   }
 };
 const GetAllInvoices = async (req, res) => {
@@ -72,7 +72,7 @@ const GetAllInvoices = async (req, res) => {
     );
     return res.json({ invoices: invoices.rows });
   } catch (error) {
-    return res.json({ error: "Get invoices error" });
+    return res.json({ error: error.message });
   }
 };
 const GetInvoice = async (req, res) => {
@@ -86,7 +86,7 @@ const GetInvoice = async (req, res) => {
 
     return res.json({ invoice: invoice.rows[0] });
   } catch (error) {
-    return res.json({ error: "Get invoice error" });
+    return res.json({ error: error.message });
   }
 };
 const deleteInvoice = async (req, res) => {
@@ -95,7 +95,7 @@ const deleteInvoice = async (req, res) => {
     await pool.query("DELETE FROM invoices WHERE id = $1", [id]);
     return res.json({ message: "Invoice deleted" });
   } catch (error) {
-    return res.json({ error: "Delete invoice error" });
+    return res.json({ error: error.message });
   }
 };
 module.exports = {

@@ -7,8 +7,6 @@ const {
   logout,
 } = require("../controllers/authController");
 
-const { authenticate } = require("../middleware/auth");
-
 router.post("/register", register);
 router.post("/login", login);
 router.post("/refresh", refreshToken);

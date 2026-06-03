@@ -7,7 +7,7 @@ const GetAllShifts = async (req, res) => {
     );
     return res.json({ shifrs: shifts.rows });
   } catch (error) {
-    return res.json({ error: "Get all shifts error" });
+    return res.json({ error: error.message });
   }
 };
 const GetShift = async (req, res) => {
@@ -25,7 +25,7 @@ const GetShift = async (req, res) => {
 
     return res.json({ shift: shift.rows[0] });
   } catch (error) {
-    return res.json({ error: "Get shift error" });
+    return res.json({ error: error.message });
   }
 };
 const addShift = async (req, res) => {
@@ -42,7 +42,7 @@ const addShift = async (req, res) => {
 
     return res.json({ shift: shift.rows[0] });
   } catch (error) {
-    return res.json({ error: "Create shift error" });
+    return res.json({ error: error.message });
   }
 };
 const updateShift = async (req, res) => {
@@ -59,7 +59,7 @@ const updateShift = async (req, res) => {
 
     return res.json({ shift: shift.rows[0] });
   } catch (error) {
-    return res.json({ error: "Update shift error" });
+    return res.json({ error: error.message });
   }
 };
 const deleteShift = async (req, res) => {
@@ -70,7 +70,7 @@ const deleteShift = async (req, res) => {
 
     return res.json({ message: "Shift deleted" });
   } catch (error) {
-    return res.json({ error: "Delete shift error" });
+    return res.json({ error: error.message });
   }
 };
 const checkIn = async (req, res) => {
@@ -82,7 +82,7 @@ const checkIn = async (req, res) => {
     );
     return res.json({ message: "Checked in" });
   } catch (error) {
-    return res.json({ error: "Check in error" });
+    return res.json({ error: error.message });
   }
 };
 
@@ -95,7 +95,7 @@ const checkOut = async (req, res) => {
     );
     return res.json({ message: "Checked out" });
   } catch (error) {
-    return res.json({ error: "Check out error" });
+    return res.json({ error: error.message });
   }
 };
 module.exports = {

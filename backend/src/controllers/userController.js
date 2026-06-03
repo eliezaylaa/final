@@ -9,7 +9,7 @@ const GetAllUsers = async (req, res) => {
     );
     return res.json({ users: users.rows });
   } catch (error) {
-    return res.json({ error: "Get ALl users error" });
+    return res.json({ error: error.message });
   }
 };
 
@@ -25,7 +25,7 @@ const GetUser = async (req, res) => {
     }
     return res.json({ user: user.rows[0] });
   } catch (error) {
-    return res.json({ error: "Get User error" });
+    return res.json({ error: error.message });
   }
 };
 const addUser = async (req, res) => {
@@ -56,7 +56,7 @@ const addUser = async (req, res) => {
 
     return res.json({ user: newUser.rows[0] });
   } catch (error) {
-    return res.json({ error: "Add user error" });
+    return res.json({ error: error.message });
   }
 };
 const updateUser = async (req, res) => {
@@ -77,7 +77,7 @@ const updateUser = async (req, res) => {
 
     return res.json({ user: user.rows[0] });
   } catch (error) {
-    return res.json({ error: "Update user errpr" });
+    return res.json({ error: error.message });
   }
 };
 const updateSalary = async (req, res) => {
@@ -96,7 +96,7 @@ const updateSalary = async (req, res) => {
 
     return res.json({ user: user.rows[0] });
   } catch (error) {
-    return res.json({ error: "Update salary error" });
+    return res.json({ error: error.message });
   }
 };
 const fireUser = async (req, res) => {
@@ -114,7 +114,7 @@ const fireUser = async (req, res) => {
 
     return res.json({ message: "User fired", user: user.rows[0] });
   } catch (error) {
-    return res.json({ error: "Fire user error" });
+    return res.json({ error: error.message });
   }
 };
 const deleteUser = async (req, res) => {
@@ -125,7 +125,7 @@ const deleteUser = async (req, res) => {
 
     return res.json({ message: "User deleted" });
   } catch (error) {
-    return res.json({ error: "Delete user error" });
+    return res.json({ error: error.message });
   }
 };
 const payManagerorEmployee = async (req, res) => {
@@ -138,7 +138,7 @@ const payManagerorEmployee = async (req, res) => {
 
     return res.json({ message: "Paid", amount });
   } catch (error) {
-    return res.json({ error: "Pay error" });
+    return res.json({ error: error.message });
   }
 };
 
