@@ -52,4 +52,27 @@ const getStaffHours = async (req, res) => {
   }
 };
 
-module.exports = { getWeeklyAttendance, getStaffHours };
+const getPayrollEstimation = async (req, res) => {
+  try {
+    const rows = await getMonthShifts();
+    const result = {};
+    rows.forEach((row) => {
+      if (!result[row.id])
+        result[row.id] = {
+          full_name: row.full_name,
+          salary: row.salary,
+          estimated_pay: 0,
+        };
+      if (row.check_in && row.check_out) {
+        const hours =
+          (new Date(row.check_out) - new Date(row.check_in)) / 3600000;
+        result[row.id].estimated_pay += row.salary * hours;
+      }
+    });
+    return res.json({ payroll: Object.values(result) });
+  } catch (error) {
+    return res.json({ error: "Payroll error" });
+  }
+};
+
+module.exports = { getWeeklyAttendance, getStaffHours, getPayrollEstimation };
