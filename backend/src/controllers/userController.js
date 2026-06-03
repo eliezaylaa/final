@@ -128,6 +128,19 @@ const deleteUser = async (req, res) => {
     return res.json({ error: "Delete user error" });
   }
 };
+const payManagerorEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { amount } = req.body;
+    await pool.query("UPDATE users SET last_paid_at = NOW() WHERE id = $1", [
+      id,
+    ]);
+
+    return res.json({ message: "Paid", amount });
+  } catch (error) {
+    return res.json({ error: "Pay error" });
+  }
+};
 
 module.exports = {
   GetAllUsers,
@@ -137,4 +150,5 @@ module.exports = {
   updateSalary,
   fireUser,
   deleteUser,
+  payManagerorEmployee,
 };

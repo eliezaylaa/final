@@ -6,6 +6,7 @@ password VARCHAR(100) NOT NULL,
 role VARCHAR(100) DEFAULT 'user',
 is_active BOOLEAN DEFAULT true,
 salary DECIMAL(10,2) DEFAULT NULL,
+last_paid_at TIMESTAMP,
 created_at TIMESTAMP DEFAULT NOW()
 );
 
