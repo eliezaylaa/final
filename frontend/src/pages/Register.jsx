@@ -34,7 +34,7 @@ function Register() {
     <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="w-96 flex flex-col gap-6 px-4">
         <div className="text-center">
-          <img src="/yoan.jpeg" className="w-70 mx-auto mb-4" />
+          <img src="/favicon.svg" className="w-30 mx-auto mb-4" />
           <h1 className="text-white text-3xl font-bold">Yoyo's Club</h1>
         </div>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
