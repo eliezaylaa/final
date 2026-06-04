@@ -49,7 +49,7 @@ function Shifts() {
   };
 
   const handleEdit = async (id) => {
-    await api.patch(`/shifts/${id}`, editData);
+    await api.put(`/shifts/${id}`, editData);
     setEditing(null);
     refresh();
   };
@@ -299,8 +299,16 @@ function Shifts() {
                       s.end_time
                     )}
                   </TableCell>
-                  <TableCell>{s.check_in || "-"}</TableCell>
-                  <TableCell>{s.check_out || "-"}</TableCell>
+                  <TableCell>
+                    {s.check_in
+                      ? new Date(s.check_in).toLocaleTimeString()
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {s.check_out
+                      ? new Date(s.check_out).toLocaleTimeString()
+                      : "-"}
+                  </TableCell>
                   <TableCell>
                     {editing == s.id ? (
                       <Box sx={{ display: "flex", gap: 1 }}>

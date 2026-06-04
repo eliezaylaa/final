@@ -71,10 +71,23 @@ const deleteShift = async (req, res) => {
 const checkIn = async (req, res) => {
   try {
     const user_id = req.user.id;
-    await pool.query(
-      "UPDATE shifts SET check_in = NOW() WHERE user_id = $1 AND date = CURRENT_DATE",
+    const today = new Date().toISOString().split("T")[0];
+    const existing = await pool.query(
+      "SELECT id FROM shifts WHERE user_id = $1 AND date = CURRENT_DATE",
       [user_id],
     );
+    if (existing.rows.length == 0) {
+      await pool.query(
+        "INSERT INTO shifts (user_id, date, start_time, check_in) VALUES ($1, $2, NOW()::time, NOW())",
+        [user_id, today],
+      );
+    } else {
+      await pool.query(
+        "UPDATE shifts SET check_in = NOW() WHERE user_id = $1 AND date = CURRENT_DATE",
+        [user_id],
+      );
+    }
+
     return res.status(200).json({ message: "Checked in" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
