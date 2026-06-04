@@ -9,6 +9,7 @@ import {
   PieChart,
   Pie,
 } from "recharts";
+import { Box, Typography, Button } from "@mui/material";
 import api from "../api/axios";
 
 function Dashboard() {
@@ -42,70 +43,115 @@ function Dashboard() {
     setWeekStart(date.toISOString().split("T")[0]);
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/login";
-  };
-
   return (
-    <div className="min-h-screen bg-black text-white flex">
-      <div className="w-56 bg-zinc-900 flex flex-col gap-2 p-4 border-r border-zinc-800">
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+      <Box
+        sx={{
+          width: 220,
+          bgcolor: "white",
+          borderRight: "1px solid #e0e0e0",
+          display: "flex",
+          flexDirection: "column",
+          p: 2,
+          gap: 1,
+        }}
+      >
         <a href="/dashboard">
-          <img src="/favicon.svg" className="w-8 mb-4" />
+          <img src="/favicon.svg" style={{ width: 32, marginBottom: 16 }} />
         </a>
-        <a href="/users" className="p-3 rounded-lg hover:bg-zinc-800">
-          Users
-        </a>
-        <a href="/shifts" className="p-3 rounded-lg hover:bg-zinc-800">
-          Shifts
-        </a>
-        <a href="/products" className="p-3 rounded-lg hover:bg-zinc-800">
-          Products
-        </a>
-        <a href="/invoices" className="p-3 rounded-lg hover:bg-zinc-800">
-          Invoices
-        </a>
-        <div className="mt-auto">
-          <button
-            onClick={handleLogout}
-            className="w-full p-3 rounded-lg bg-zinc-800 hover:bg-zinc-700"
+        {["Users", "Shifts", "Products", "Invoices"].map((item) => (
+          <a
+            key={item}
+            href={`/${item.toLowerCase()}`}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                "&:hover": { bgcolor: "#f5f5f5" },
+                color: "#333",
+                fontSize: 14,
+              }}
+            >
+              {item}
+            </Box>
+          </a>
+        ))}
+        <Box sx={{ mt: "auto" }}>
+          <Button
+            fullWidth
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/login";
+            }}
+            sx={{ textTransform: "none", color: "#666" }}
           >
             Logout
-          </button>
-        </div>
-      </div>
-      <div className="flex-1 p-8">
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-        <div className="flex gap-6">
-          <div className="flex flex-col gap-6">
-            <div className="bg-zinc-900 p-4 rounded-xl w-96">
-              <h3 className="text-lg font-semibold mb-2">Weekly Attendance</h3>
-              <div className="flex gap-2 mb-4">
-                <button
+          </Button>
+        </Box>
+      </Box>
+
+      <Box sx={{ flex: 1, p: 4 }}>
+        <Typography variant="h5" fontWeight="600" mb={3}>
+          Dashboard
+        </Typography>
+        <Box sx={{ display: "flex", gap: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Box
+              sx={{
+                bgcolor: "white",
+                p: 3,
+                borderRadius: 3,
+                width: 400,
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              }}
+            >
+              <Typography fontWeight="600" mb={1}>
+                Weekly Attendance
+              </Typography>
+              <Box
+                sx={{ display: "flex", gap: 1, mb: 2, alignItems: "center" }}
+              >
+                <Button
+                  size="small"
                   onClick={prevWeek}
-                  className="bg-zinc-800 px-3 py-1 rounded"
+                  sx={{ textTransform: "none", minWidth: 0 }}
                 >
                   prev
-                </button>
-                <span className="text-zinc-400 text-sm">{weekStart}</span>
-                <button
+                </Button>
+                <Typography variant="body2" color="#888">
+                  {weekStart}
+                </Typography>
+                <Button
+                  size="small"
                   onClick={nextWeek}
-                  className="bg-zinc-800 px-3 py-1 rounded"
+                  sx={{ textTransform: "none", minWidth: 0 }}
                 >
                   next
-                </button>
-              </div>
+                </Button>
+              </Box>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={attendance}>
                   <XAxis dataKey="full_name" stroke="#888" />
                   <YAxis stroke="#888" />
                   <Tooltip />
-                  <Bar dataKey="hours_worked" fill="#7c3aed" barSize={40} />
+                  <Bar dataKey="hours_worked" fill="#1976d2" barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-            <div className="bg-zinc-900 p-4 rounded-xl w-96">
-              <h3 className="text-lg font-semibold mb-4">Staff Hours</h3>
+            </Box>
+            <Box
+              sx={{
+                bgcolor: "white",
+                p: 3,
+                borderRadius: 3,
+                width: 400,
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              }}
+            >
+              <Typography fontWeight="600" mb={2}>
+                Staff Hours
+              </Typography>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -115,38 +161,55 @@ function Dashboard() {
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
-                    fill="#2563eb"
+                    fill="#22c55e"
                   />
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
-          </div>
-          <div className="bg-zinc-900 p-4 rounded-xl flex-1">
-            <h3 className="text-lg font-semibold mb-4">Payroll Estimation</h3>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              bgcolor: "white",
+              p: 3,
+              borderRadius: 3,
+              flex: 1,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+            }}
+          >
+            <Typography fontWeight="600" mb={2}>
+              Payroll Estimation
+            </Typography>
             {payroll.map((p) => (
-              <div
+              <Box
                 key={p.full_name}
-                className="flex justify-between items-center mb-3"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
               >
-                <span>{p.full_name}</span>
-                <span className="text-green-400">
-                  {p.estimated_pay?.toFixed(2)}€
-                </span>
-                <button
+                <Typography>{p.full_name}</Typography>
+                <Typography color="green">
+                  {p.estimated_pay.toFixed(2)}€
+                </Typography>
+                <Button
+                  size="small"
+                  variant="contained"
                   onClick={() =>
                     api.post(`/users/${p.id}/pay`, { amount: p.estimated_pay })
                   }
-                  className="bg-violet-600 hover:bg-violet-700 px-3 py-1 rounded text-sm"
+                  sx={{ textTransform: "none" }}
                 >
                   Pay
-                </button>
-              </div>
+                </Button>
+              </Box>
             ))}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
