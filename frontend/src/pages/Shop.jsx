@@ -17,6 +17,14 @@ function Shop() {
     api.get("/products").then((res) => setProducts(res.data.products || []));
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const payment_intent = params.get("payment_intent");
+    if (payment_intent) {
+      api.post("/invoices/confirm", { payment_intent_id: payment_intent });
+    }
+  }, []);
+
   const addToCart = (product) => {
     const existing = cart.find((item) => item.product_id == product.id);
     if (existing) {
@@ -51,6 +59,7 @@ function Shop() {
       quantity: item.quantity,
     }));
     const res = await api.post("/invoices", { items });
+    window.location.href = `/checkout?client_secret=${res.data.client_secret}`;
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -78,7 +87,6 @@ function Shop() {
           Logout
         </Button>
       </Box>
-
       <Box sx={{ display: "flex", gap: 4 }}>
         <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: 2 }}>
           {products.map((p) => (
@@ -103,7 +111,6 @@ function Shop() {
             </Card>
           ))}
         </Box>
-
         <Box
           sx={{
             width: 280,

@@ -7,6 +7,7 @@ import Shifts from "./pages/Shifts";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Shop from "./pages/Shop";
+import Checkout from "./pages/Checkout";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   );
