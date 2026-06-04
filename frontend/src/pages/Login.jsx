@@ -5,9 +5,9 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const handleLogin = async () => {
-   
     try {
       const res = await api.post("/auth/login", { email, password });
+      console.log(res.data);
       if (!res.data.access) {
         setError("Invalid credentials");
         return;
@@ -15,7 +15,14 @@ function Login() {
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/home";
+      const role = res.data.user.role;
+      if (role == "admin") {
+        window.location.href = "/dashboard";
+      } else if (role == "manager" || role == "employee") {
+        window.location.href = "/home";
+      } else {
+        window.location.href = "/shop";
+      }
     } catch (err) {
       setError(err.response.data.error);
     }
@@ -24,7 +31,6 @@ function Login() {
     <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="w-96 flex flex-col gap-6 px-4">
         <div className="text-center">
-          <img src="/yoan.jpeg" className="w-70 mx-auto mb-4" />
           <h1 className="text-white text-3xl font-bold">Yoyo's Club</h1>
         </div>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}

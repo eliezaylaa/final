@@ -68,6 +68,7 @@ const login = async (req, res) => {
         id: user.rows[0].id,
         email: user.rows[0].email,
         full_name: user.rows[0].full_name,
+        role: user.rows[0].role,
       },
       access,
       refresh,

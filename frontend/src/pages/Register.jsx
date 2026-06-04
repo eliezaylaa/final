@@ -8,7 +8,6 @@ function Register() {
   const [error, setError] = useState("");
 
   const handleRegister = async () => {
-   
     try {
       const res = await api.post("/auth/register", {
         full_name,
@@ -18,7 +17,14 @@ function Register() {
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      window.location.href = "/home";
+      const role = res.data.user.role;
+      if (role == "admin") {
+        window.location.href = "/dashboard";
+      } else if (role == "manager" || role == "employee") {
+        window.location.href = "/home";
+      } else {
+        window.location.href = "/shop";
+      }
     } catch (err) {
       setError(err.response.data.error);
     }
