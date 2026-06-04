@@ -6,6 +6,7 @@ import Users from "./pages/Users";
 import Shifts from "./pages/Shifts";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
+import Shop from "./pages/Shop";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/shifts" element={<Shifts />} />
         <Route path="/home" element={<Home />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/shop" element={<Shop />} />
       </Routes>
     </BrowserRouter>
   );
