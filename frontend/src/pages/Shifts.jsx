@@ -9,14 +9,56 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
+  Modal,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 function Shifts() {
   const [shifts, setShifts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [addModal, setAddModal] = useState(false);
+  const [menu, setMenu] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({
+    user_id: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+  });
+  const [editData, setEditData] = useState({
+    date: "",
+    start_time: "",
+    end_time: "",
+  });
 
   useEffect(() => {
     api.get("/shifts").then((res) => setShifts(res.data.shifts || []));
+    api.get("/users").then((res) => setUsers(res.data.users || []));
   }, []);
+
+  const refresh = () =>
+    api.get("/shifts").then((res) => setShifts(res.data.shifts || []));
+
+  const handleAdd = async () => {
+    await api.post("/shifts", form);
+    refresh();
+    setAddModal(false);
+    setForm({ user_id: "", date: "", start_time: "", end_time: "" });
+  };
+
+  const handleEdit = async (id) => {
+    await api.patch(`/shifts/${id}`, editData);
+    setEditing(null);
+    refresh();
+  };
+
+  const handleDelete = async (id) => {
+    await api.delete(`/shifts/${id}`);
+    refresh();
+    setMenu(null);
+  };
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f5f5" }}>
@@ -66,10 +108,135 @@ function Shifts() {
           </Button>
         </Box>
       </Box>
+
       <Box sx={{ flex: 1, p: 4 }}>
-        <Typography variant="h5" fontWeight="600" mb={3}>
-          Shifts
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
+          <Typography variant="h5" fontWeight="600">
+            Shifts
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => setAddModal(true)}
+            sx={{ textTransform: "none" }}
+          >
+            Add Shift
+          </Button>
+        </Box>
+
+        <Modal open={addModal} onClose={() => setAddModal(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "white",
+              p: 4,
+              borderRadius: 3,
+              width: 400,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Typography variant="h6" fontWeight="600">
+              Add Shift
+            </Typography>
+            <Select
+              value={form.user_id}
+              onChange={(e) =>
+                setForm({
+                  user_id: e.target.value,
+                  date: form.date,
+                  start_time: form.start_time,
+                  end_time: form.end_time,
+                })
+              }
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select User
+              </MenuItem>
+              {users.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.full_name}
+                </MenuItem>
+              ))}
+            </Select>
+            <TextField
+              label="Date"
+              type="date"
+              value={form.date}
+              onChange={(e) =>
+                setForm({
+                  user_id: form.user_id,
+                  date: e.target.value,
+                  start_time: form.start_time,
+                  end_time: form.end_time,
+                })
+              }
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Start Time"
+              type="time"
+              value={form.start_time}
+              onChange={(e) =>
+                setForm({
+                  user_id: form.user_id,
+                  date: form.date,
+                  start_time: e.target.value,
+                  end_time: form.end_time,
+                })
+              }
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="End Time"
+              type="time"
+              value={form.end_time}
+              onChange={(e) =>
+                setForm({
+                  user_id: form.user_id,
+                  date: form.date,
+                  start_time: form.start_time,
+                  end_time: e.target.value,
+                })
+              }
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="contained"
+                onClick={handleAdd}
+                fullWidth
+                sx={{ textTransform: "none" }}
+              >
+                Add
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setAddModal(false)}
+                fullWidth
+                sx={{ textTransform: "none" }}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+
         <Box
           sx={{
             bgcolor: "white",
@@ -87,6 +254,7 @@ function Shifts() {
                 <TableCell>End</TableCell>
                 <TableCell>Check In</TableCell>
                 <TableCell>Check Out</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -94,11 +262,129 @@ function Shifts() {
                 <TableRow key={s.id}>
                   <TableCell>{s.full_name}</TableCell>
                   <TableCell>{s.role}</TableCell>
-                  <TableCell>{s.date}</TableCell>
-                  <TableCell>{s.start_time}</TableCell>
-                  <TableCell>{s.end_time}</TableCell>
+                  <TableCell>{s.date ? s.date.split("T")[0] : "-"}</TableCell>
+                  <TableCell>
+                    {editing == s.id ? (
+                      <TextField
+                        size="small"
+                        type="time"
+                        value={editData.start_time}
+                        onChange={(e) =>
+                          setEditData({
+                            date: editData.date,
+                            start_time: e.target.value,
+                            end_time: editData.end_time,
+                          })
+                        }
+                      />
+                    ) : (
+                      s.start_time
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing == s.id ? (
+                      <TextField
+                        size="small"
+                        type="time"
+                        value={editData.end_time}
+                        onChange={(e) =>
+                          setEditData({
+                            date: editData.date,
+                            start_time: editData.start_time,
+                            end_time: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      s.end_time
+                    )}
+                  </TableCell>
                   <TableCell>{s.check_in || "-"}</TableCell>
                   <TableCell>{s.check_out || "-"}</TableCell>
+                  <TableCell>
+                    {editing == s.id ? (
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={() => handleEdit(s.id)}
+                          sx={{ textTransform: "none" }}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="small"
+                          onClick={() => setEditing(null)}
+                          sx={{ textTransform: "none" }}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    ) : (
+                      <Box sx={{ position: "relative" }}>
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            if (menu == s.id) {
+                              setMenu(null);
+                            } else {
+                              setMenu(s.id);
+                            }
+                          }}
+                          sx={{ minWidth: 0, textTransform: "none" }}
+                        >
+                          more
+                        </Button>
+                        {menu == s.id && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              right: 0,
+                              bgcolor: "white",
+                              boxShadow: 3,
+                              borderRadius: 2,
+                              zIndex: 10,
+                              width: 120,
+                              p: 1,
+                            }}
+                          >
+                            <Box
+                              onClick={() => {
+                                setEditData({
+                                  date: s.date,
+                                  start_time: s.start_time,
+                                  end_time: s.end_time,
+                                });
+                                setEditing(s.id);
+                                setMenu(null);
+                              }}
+                              sx={{
+                                p: 1,
+                                borderRadius: 1,
+                                cursor: "pointer",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                fontSize: 14,
+                              }}
+                            >
+                              Edit
+                            </Box>
+                            <Box
+                              onClick={() => handleDelete(s.id)}
+                              sx={{
+                                p: 1,
+                                borderRadius: 1,
+                                cursor: "pointer",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                fontSize: 14,
+                              }}
+                            >
+                              Delete
+                            </Box>
+                          </Box>
+                        )}
+                      </Box>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
