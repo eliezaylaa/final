@@ -6,11 +6,14 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  PieChart,
+  Pie,
 } from "recharts";
 import api from "../api/axios";
 
 function Dashboard() {
   const [attendance, setAttendance] = useState([]);
+  const [hours, setHours] = useState([]);
   const [weekStart, setWeekStart] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -20,6 +23,10 @@ function Dashboard() {
       .get(`/kpi/attendance?week_start=${weekStart}`)
       .then((res) => setAttendance(res.data.attendance || []));
   }, [weekStart]);
+
+  useEffect(() => {
+    api.get("/kpi/hours").then((res) => setHours(res.data.hours || []));
+  }, []);
 
   const prevWeek = () => {
     const date = new Date(weekStart);
@@ -91,6 +98,23 @@ function Dashboard() {
               <Tooltip />
               <Bar dataKey="hours_worked" fill="#7c3aed" barSize={40} />
             </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-zinc-900 p-4 rounded-xl w-96 mt-6">
+          <h3 className="text-lg font-semibold mb-4">Staff Hours</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={hours}
+                dataKey="hours_worked"
+                nameKey="full_name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                fill="#2563eb"
+              />
+              <Tooltip />
+            </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
