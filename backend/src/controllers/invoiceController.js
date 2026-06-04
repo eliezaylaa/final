@@ -1,13 +1,13 @@
 const pool = require("../config/db");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_KEY);
+
 const createInvoice = async (req, res) => {
   try {
     const { items } = req.body;
     const customer_id = req.user.id;
-
     if (!items || items.length == 0) {
-      return res.json({ error: "No items" });
+      return res.status(400).json({ error: "No items" });
     }
     let total = 0;
     for (const item of items) {
@@ -15,7 +15,6 @@ const createInvoice = async (req, res) => {
         "SELECT price FROM products WHERE id = $1",
         [item.product_id],
       );
-
       total = total + product.rows[0].price * item.quantity;
     }
     const paymentIntent = await stripe.paymentIntents.create({
@@ -26,12 +25,12 @@ const createInvoice = async (req, res) => {
         items: JSON.stringify(items),
       },
     });
-
-    return res.json({ client_secret: paymentIntent.client_secret });
+    return res.status(200).json({ client_secret: paymentIntent.client_secret });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
+
 const confirmPayment = async (req, res) => {
   try {
     const { payment_intent_id } = req.body;
@@ -39,7 +38,7 @@ const confirmPayment = async (req, res) => {
     const paymentIntent =
       await stripe.paymentIntents.retrieve(payment_intent_id);
     if (paymentIntent.status != "succeeded") {
-      return res.json({ error: "Payment not successful" });
+      return res.status(400).json({ error: "Payment not successful" });
     }
     const items = JSON.parse(paymentIntent.metadata.items);
     const total = paymentIntent.amount / 100;
@@ -47,7 +46,6 @@ const confirmPayment = async (req, res) => {
       "INSERT INTO invoices (customer_id, total, payment_method, is_paid, paid_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *",
       [customer_id, total, "stripe", true],
     );
-
     const invoice_id = invoice.rows[0].id;
     for (const item of items) {
       const product = await pool.query(
@@ -59,22 +57,24 @@ const confirmPayment = async (req, res) => {
         [invoice_id, item.product_id, item.quantity, product.rows[0].price],
       );
     }
-    return res.json({ invoice: invoice.rows[0] });
+    return res.status(200).json({ invoice: invoice.rows[0] });
   } catch (error) {
     console.error(error);
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
+
 const GetAllInvoices = async (req, res) => {
   try {
     const invoices = await pool.query(
       "SELECT i.*, u.full_name FROM invoices i JOIN users u ON u.id = i.customer_id ORDER BY i.created_at ASC",
     );
-    return res.json({ invoices: invoices.rows });
+    return res.status(200).json({ invoices: invoices.rows });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
+
 const GetInvoice = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,22 +82,23 @@ const GetInvoice = async (req, res) => {
       id,
     ]);
     if (invoice.rows.length == 0)
-      return res.json({ error: "Invoice not found" });
-
-    return res.json({ invoice: invoice.rows[0] });
+      return res.status(404).json({ error: "Invoice not found" });
+    return res.status(200).json({ invoice: invoice.rows[0] });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
+
 const deleteInvoice = async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM invoices WHERE id = $1", [id]);
-    return res.json({ message: "Invoice deleted" });
+    return res.status(200).json({ message: "Invoice deleted" });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
+
 module.exports = {
   createInvoice,
   confirmPayment,

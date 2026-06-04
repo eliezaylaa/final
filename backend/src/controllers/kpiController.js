@@ -28,9 +28,9 @@ const getWeeklyAttendance = async (req, res) => {
           (new Date(row.check_out) - new Date(row.check_in)) / 3600000;
       }
     });
-    return res.json({ attendance: Object.values(result) });
+    return res.status(200).json({ attendance: Object.values(result) });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -46,9 +46,9 @@ const getStaffHours = async (req, res) => {
           (new Date(row.check_out) - new Date(row.check_in)) / 3600000;
       }
     });
-    return res.json({ hours: Object.values(result) });
+    return res.status(200).json({ hours: Object.values(result) });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -69,9 +69,9 @@ const getPayrollEstimation = async (req, res) => {
         result[row.id].estimated_pay += row.salary * hours;
       }
     });
-    return res.json({ payroll: Object.values(result) });
+    return res.status(200).json({ payroll: Object.values(result) });
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
