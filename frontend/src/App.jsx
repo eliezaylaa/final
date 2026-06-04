@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Shifts from "./pages/Shifts";
 import Home from "./pages/Home";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/shifts" element={<Shifts />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/products" element={<Products />} />
       </Routes>
     </BrowserRouter>
   );
