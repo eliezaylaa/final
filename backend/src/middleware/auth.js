@@ -3,26 +3,26 @@ const authenticate = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      return res.json({ error: "No Token" });
+      return res.status(401).json({ error: "No Token" });
     }
     const verification = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verification;
     next();
   } catch (error) {
-    return res.json({ error: error.message });
+    return res.status(401).json({ error: error.message });
   }
 };
 
 const admin = (req, res, next) => {
   if (req.user.role != "admin") {
-    return res.json({ error: "Access denied" });
+    return res.status(401).json({ error: "Access denied" });
   }
   next();
 };
 
 const adminormanager = (req, res, next) => {
   if (req.user.role != "admin" && req.user.role != "manager") {
-    return res.json({ error: "Access denied" });
+    return res.status(401).json({ error: "Access denied" });
   }
   next();
 };

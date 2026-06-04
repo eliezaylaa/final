@@ -8,4 +8,29 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response.status === 401) {
+      const refresh = localStorage.getItem("refresh");
+      if (!refresh) {
+        window.location.href = "/login";
+        return;
+      }
+      try {
+        const res = await axios.post("http://localhost:5000/auth/refresh", {
+          refresh,
+        });
+        localStorage.setItem("access", res.data.access);
+        error.config.headers.Authorization = `Bearer ${res.data.access}`;
+        return api(error.config);
+      } catch {
+        localStorage.clear();
+        window.location.href = "/login";
+      }
+    }
+    return error;
+  },
+);
+
 export default api;
