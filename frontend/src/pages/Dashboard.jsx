@@ -14,6 +14,7 @@ import api from "../api/axios";
 function Dashboard() {
   const [attendance, setAttendance] = useState([]);
   const [hours, setHours] = useState([]);
+  const [payroll, setPayroll] = useState([]);
   const [weekStart, setWeekStart] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -26,6 +27,7 @@ function Dashboard() {
 
   useEffect(() => {
     api.get("/kpi/hours").then((res) => setHours(res.data.hours || []));
+    api.get("/kpi/payroll").then((res) => setPayroll(res.data.payroll || []));
   }, []);
 
   const prevWeek = () => {
@@ -74,48 +76,74 @@ function Dashboard() {
       </div>
       <div className="flex-1 p-8">
         <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-        <div className="bg-zinc-900 p-4 rounded-xl w-96">
-          <h3 className="text-lg font-semibold mb-2">Weekly Attendance</h3>
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={prevWeek}
-              className="bg-zinc-800 px-3 py-1 rounded"
-            >
-              prev
-            </button>
-            <span className="text-zinc-400 text-sm">{weekStart}</span>
-            <button
-              onClick={nextWeek}
-              className="bg-zinc-800 px-3 py-1 rounded"
-            >
-              next
-            </button>
+        <div className="flex gap-6">
+          <div className="flex flex-col gap-6">
+            <div className="bg-zinc-900 p-4 rounded-xl w-96">
+              <h3 className="text-lg font-semibold mb-2">Weekly Attendance</h3>
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={prevWeek}
+                  className="bg-zinc-800 px-3 py-1 rounded"
+                >
+                  prev
+                </button>
+                <span className="text-zinc-400 text-sm">{weekStart}</span>
+                <button
+                  onClick={nextWeek}
+                  className="bg-zinc-800 px-3 py-1 rounded"
+                >
+                  next
+                </button>
+              </div>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={attendance}>
+                  <XAxis dataKey="full_name" stroke="#888" />
+                  <YAxis stroke="#888" />
+                  <Tooltip />
+                  <Bar dataKey="hours_worked" fill="#7c3aed" barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="bg-zinc-900 p-4 rounded-xl w-96">
+              <h3 className="text-lg font-semibold mb-4">Staff Hours</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={hours}
+                    dataKey="hours_worked"
+                    nameKey="full_name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#2563eb"
+                  />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={attendance}>
-              <XAxis dataKey="full_name" stroke="#888" />
-              <YAxis stroke="#888" />
-              <Tooltip />
-              <Bar dataKey="hours_worked" fill="#7c3aed" barSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-zinc-900 p-4 rounded-xl w-96 mt-6">
-          <h3 className="text-lg font-semibold mb-4">Staff Hours</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={hours}
-                dataKey="hours_worked"
-                nameKey="full_name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                fill="#2563eb"
-              />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          <div className="bg-zinc-900 p-4 rounded-xl flex-1">
+            <h3 className="text-lg font-semibold mb-4">Payroll Estimation</h3>
+            {payroll.map((p) => (
+              <div
+                key={p.full_name}
+                className="flex justify-between items-center mb-3"
+              >
+                <span>{p.full_name}</span>
+                <span className="text-green-400">
+                  {p.estimated_pay?.toFixed(2)}€
+                </span>
+                <button
+                  onClick={() =>
+                    api.post(`/users/${p.id}/pay`, { amount: p.estimated_pay })
+                  }
+                  className="bg-violet-600 hover:bg-violet-700 px-3 py-1 rounded text-sm"
+                >
+                  Pay
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
