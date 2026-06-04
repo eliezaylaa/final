@@ -21,7 +21,7 @@ function CheckoutForm() {
     const result = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:5174/invoices",
+        return_url: "http://localhost:5174/shop",
       },
     });
 

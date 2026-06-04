@@ -12,6 +12,7 @@ import {
 function Shop() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
     api.get("/products").then((res) => setProducts(res.data.products || []));
@@ -21,7 +22,12 @@ function Shop() {
     const params = new URLSearchParams(window.location.search);
     const payment_intent = params.get("payment_intent");
     if (payment_intent) {
-      api.post("/invoices/confirm", { payment_intent_id: payment_intent });
+      api
+        .post("/invoices/confirm", { payment_intent_id: payment_intent })
+        .then(() => {
+          setSuccessMsg("Your invoice has been sent by email!");
+          window.history.replaceState({}, "", "/shop");
+        });
     }
   }, []);
 
@@ -87,6 +93,7 @@ function Shop() {
           Logout
         </Button>
       </Box>
+      {successMsg && <Typography mb={2}>{successMsg}</Typography>}
       <Box sx={{ display: "flex", gap: 4 }}>
         <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: 2 }}>
           {products.map((p) => (
