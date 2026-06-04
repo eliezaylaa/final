@@ -59,6 +59,7 @@ const getPayrollEstimation = async (req, res) => {
     rows.forEach((row) => {
       if (!result[row.id])
         result[row.id] = {
+          id: row.id,
           full_name: row.full_name,
           salary: row.salary,
           estimated_pay: 0,

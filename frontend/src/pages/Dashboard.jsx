@@ -19,6 +19,7 @@ function Dashboard() {
   const [weekStart, setWeekStart] = useState(
     new Date().toISOString().split("T")[0],
   );
+  const [paid, setPaid] = useState({});
 
   useEffect(() => {
     api
@@ -41,6 +42,14 @@ function Dashboard() {
     const date = new Date(weekStart);
     date.setDate(date.getDate() + 7);
     setWeekStart(date.toISOString().split("T")[0]);
+  };
+
+  const handlePay = async (id, amount) => {
+    await api.post(`/users/${id}/pay`, { amount });
+    setPaid({ ...paid, [id]: true });
+    setTimeout(() => {
+      setPayroll(payroll.filter((p) => p.id != id));
+    }, 2000);
   };
 
   return (
@@ -194,16 +203,20 @@ function Dashboard() {
                 <Typography color="green">
                   {p.estimated_pay.toFixed(2)}€
                 </Typography>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={() =>
-                    api.post(`/users/${p.id}/pay`, { amount: p.estimated_pay })
-                  }
-                  sx={{ textTransform: "none" }}
-                >
-                  Pay
-                </Button>
+                {!paid[p.id] ? (
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() => handlePay(p.id, p.estimated_pay)}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Pay
+                  </Button>
+                ) : (
+                  <Typography variant="body2" color="green">
+                    Paid
+                  </Typography>
+                )}
               </Box>
             ))}
           </Box>
