@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api/axios";
+import { TextField, Button, Typography, Box, Alert } from "@mui/material";
 
 function Register() {
   const [full_name, setFullName] = useState("");
@@ -31,50 +32,74 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="w-96 flex flex-col gap-6 px-4">
-        <div className="text-center">
-          <img src="/favicon.svg" className="w-30 mx-auto mb-4" />
-          <h1 className="text-white text-3xl font-bold">Yoyo's Club</h1>
-        </div>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <div className="flex flex-col gap-3">
-          <input
-            type="text"
-            placeholder="Full Name"
+    <Box sx={{ minHeight: "100vh", display: "flex", bgcolor: "#f5f5f5" }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: 400,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2.5,
+          }}
+        >
+          <Typography
+            variant="h2"
+            align="center"
+            fontWeight="bold"
+            color="#1a1a1a"
+          >
+            YoYo's Club
+          </Typography>
+          {error && <Alert severity="error">{error}</Alert>}
+          <TextField
+            label="Full Name"
             value={full_name}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 text-white p-3 rounded-lg outline-none placeholder:text-zinc-600 focus:border-violet-500"
+            fullWidth
           />
-          <input
+          <TextField
+            label="Email"
             type="email"
-            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 text-white p-3 rounded-lg outline-none placeholder:text-zinc-600 focus:border-violet-500"
+            fullWidth
           />
-          <input
+          <TextField
+            label="Password"
             type="password"
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 text-white p-3 rounded-lg outline-none placeholder:text-zinc-600 focus:border-violet-500"
+            fullWidth
           />
-          <button
+          <Button
+            variant="contained"
             onClick={handleRegister}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-lg font-semibold mt-2"
+            fullWidth
+            sx={{
+              py: 1.5,
+              textTransform: "none",
+              fontSize: 16,
+              borderRadius: 2,
+            }}
           >
             Register
-          </button>
-        </div>
-        <p className="text-zinc-500 text-sm text-center">
-          Already have an account?{" "}
-          <a href="/login" className="text-violet-400 hover:text-violet-300">
-            Login
-          </a>
-        </p>
-      </div>
-    </div>
+          </Button>
+          <Typography color="#888" variant="body2">
+            Already have an account?{" "}
+            <a href="/login" style={{ color: "#1976d2" }}>
+              Login
+            </a>
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
