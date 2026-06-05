@@ -20,7 +20,6 @@ function Login() {
       }
     }
   }, []);
-  gj6yju5j6y;
 
   const handleLogin = async () => {
     try {
