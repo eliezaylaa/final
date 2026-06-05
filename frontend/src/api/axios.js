@@ -20,9 +20,12 @@ api.interceptors.response.use(
         return;
       }
       try {
-        const res = await axios.post("http://localhost:5000/auth/refresh", {
-          refresh,
-        });
+        const res = await axios.post(
+          "https://yoyos-club-backend.onrender.com/auth/refresh",
+          {
+            refresh,
+          },
+        );
         localStorage.setItem("access", res.data.access);
         error.config.headers.Authorization = `Bearer ${res.data.access}`;
         return api(error.config);
