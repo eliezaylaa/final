@@ -19,10 +19,10 @@ const {
 } = require("../middleware/auth");
 
 router.get("/", authenticate, admin, GetAllUsers);
+router.get("/mypayments", authenticate, employeeormanager, getMyPayments);
 router.get("/:id", authenticate, adminormanager, GetUser);
 router.post("/", authenticate, admin, addUser);
 router.post("/:id/pay", authenticate, admin, payManagerorEmployee);
-router.get("/mypayments", authenticate, employeeormanager, getMyPayments);
 router.put("/:id", authenticate, admin, updateUser);
 router.put("/:id/salary", authenticate, adminormanager, updateSalary);
 router.put("/:id/fire", authenticate, adminormanager, fireUser);
