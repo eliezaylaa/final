@@ -411,7 +411,7 @@ function Users() {
                           }}
                           sx={{ minWidth: 0, textTransform: "none" }}
                         >
-                          ***
+                          more
                         </Button>
                         {menu == u.id && u.is_active && (
                           <Box

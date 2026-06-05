@@ -3,6 +3,17 @@ import api from "../api/axios";
 import { TextField, Button, Typography, Box, Alert } from "@mui/material";
 
 function Register() {
+  const token = localStorage.getItem("access");
+  if (token) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user.role == "admin") {
+      window.location.href = "/dashboard";
+    } else if (user.role == "manager" || user.role == "employee") {
+      window.location.href = "/home";
+    } else {
+      window.location.href = "/shop";
+    }
+  }
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

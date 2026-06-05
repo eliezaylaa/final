@@ -17,6 +17,7 @@ function Products() {
   const [products, setProducts] = useState([]);
   const [addModal, setAddModal] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [menu, setMenu] = useState(null);
   const [form, setForm] = useState({ name: "", price: "" });
   const [editData, setEditData] = useState({ name: "", price: "" });
 
@@ -43,6 +44,7 @@ function Products() {
   const handleDelete = async (id) => {
     await api.delete(`/products/${id}`);
     refresh();
+    setMenu(null);
   };
 
   return (
@@ -241,24 +243,63 @@ function Products() {
                         </Button>
                       </Box>
                     ) : (
-                      <Box sx={{ display: "flex", gap: 1 }}>
+                      <Box sx={{ position: "relative" }}>
                         <Button
                           size="small"
                           onClick={() => {
-                            setEditData({ name: p.name, price: p.price });
-                            setEditing(p.id);
+                            if (menu == p.id) {
+                              setMenu(null);
+                            } else {
+                              setMenu(p.id);
+                            }
                           }}
-                          sx={{ textTransform: "none" }}
+                          sx={{ minWidth: 0, textTransform: "none" }}
                         >
-                          Edit
+                          more
                         </Button>
-                        <Button
-                          size="small"
-                          onClick={() => handleDelete(p.id)}
-                          sx={{ textTransform: "none", color: "red" }}
-                        >
-                          Delete
-                        </Button>
+                        {menu == p.id && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              right: 0,
+                              bgcolor: "white",
+                              boxShadow: 3,
+                              borderRadius: 2,
+                              zIndex: 10,
+                              width: 120,
+                              p: 1,
+                            }}
+                          >
+                            <Box
+                              onClick={() => {
+                                setEditData({ name: p.name, price: p.price });
+                                setEditing(p.id);
+                                setMenu(null);
+                              }}
+                              sx={{
+                                p: 1,
+                                borderRadius: 1,
+                                cursor: "pointer",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                fontSize: 14,
+                              }}
+                            >
+                              Edit
+                            </Box>
+                            <Box
+                              onClick={() => handleDelete(p.id)}
+                              sx={{
+                                p: 1,
+                                borderRadius: 1,
+                                cursor: "pointer",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                                fontSize: 14,
+                              }}
+                            >
+                              Delete
+                            </Box>
+                          </Box>
+                        )}
                       </Box>
                     )}
                   </TableCell>
