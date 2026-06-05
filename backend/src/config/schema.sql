@@ -63,3 +63,9 @@ CREATE TABLE IF NOT EXISTS refresh_token(
 
 
 
+CREATE TABLE payments (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  amount DECIMAL(10,2),
+  paid_at TIMESTAMP DEFAULT NOW()
+);

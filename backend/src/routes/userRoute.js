@@ -9,13 +9,20 @@ const {
   fireUser,
   deleteUser,
   payManagerorEmployee,
+  getMyPayments,
 } = require("../controllers/userController");
-const { authenticate, admin, adminormanager } = require("../middleware/auth");
+const {
+  authenticate,
+  admin,
+  adminormanager,
+  employeeormanager,
+} = require("../middleware/auth");
 
 router.get("/", authenticate, admin, GetAllUsers);
 router.get("/:id", authenticate, adminormanager, GetUser);
 router.post("/", authenticate, admin, addUser);
 router.post("/:id/pay", authenticate, admin, payManagerorEmployee);
+router.get("/mypayments", authenticate, employeeormanager, getMyPayments);
 router.put("/:id", authenticate, admin, updateUser);
 router.put("/:id/salary", authenticate, adminormanager, updateSalary);
 router.put("/:id/fire", authenticate, adminormanager, fireUser);

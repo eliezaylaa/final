@@ -118,7 +118,22 @@ const payManagerorEmployee = async (req, res) => {
     await pool.query("UPDATE users SET last_paid_at = NOW() WHERE id = $1", [
       id,
     ]);
+    await pool.query("INSERT INTO payments (user_id, amount) VALUES ($1, $2)", [
+      id,
+      amount,
+    ]);
     return res.status(200).json({ message: "Paid", amount });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+const getMyPayments = async (req, res) => {
+  try {
+    const payments = await pool.query(
+      "SELECT * FROM payments WHERE user_id = $1 ORDER BY paid_at DESC",
+      [req.user.id],
+    );
+    return res.status(200).json({ payments: payments.rows });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -133,4 +148,5 @@ module.exports = {
   fireUser,
   deleteUser,
   payManagerorEmployee,
+  getMyPayments,
 };

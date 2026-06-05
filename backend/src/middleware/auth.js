@@ -26,5 +26,11 @@ const adminormanager = (req, res, next) => {
   }
   next();
 };
+const employeeormanager = (req, res, next) => {
+  if (req.user.role != "employee" && req.user.role != "manager") {
+    return res.status(403).json({ error: "Access denied" });
+  }
+  next();
+};
 
-module.exports = { authenticate, admin, adminormanager };
+module.exports = { authenticate, admin, adminormanager, employeeormanager };
