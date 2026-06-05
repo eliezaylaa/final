@@ -77,9 +77,6 @@ function Checkout() {
           boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
         }}
       >
-        <Typography variant="h5" fontWeight="600" mb={3}>
-          Checkout
-        </Typography>
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm />
         </Elements>
