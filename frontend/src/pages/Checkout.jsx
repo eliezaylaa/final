@@ -50,10 +50,13 @@ function Checkout() {
     "client_secret",
   );
 
-  if (!clientSecret) {
-    window.location.href = "/shop";
-    return null;
-  }
+  useEffect(() => {
+    if (!clientSecret) {
+      window.location.href = "/shop";
+    }
+  }, [clientSecret]);
+
+  if (!clientSecret) return null;
 
   return (
     <Box
