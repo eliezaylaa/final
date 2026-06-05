@@ -40,7 +40,7 @@ function Login() {
         window.location.href = "/shop";
       }
     } catch (err) {
-      setError(err.response.data.error);
+      setError(err.response?.data?.error);
     }
   };
 
