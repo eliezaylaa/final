@@ -1,22 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { TextField, Button, Typography, Box, Alert } from "@mui/material";
 
 function Login() {
-  const token = localStorage.getItem("access");
-  if (token) {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user.role == "admin") {
-      window.location.href = "/dashboard";
-    } else if (user.role == "manager" || user.role == "employee") {
-      window.location.href = "/home";
-    } else {
-      window.location.href = "/shop";
-    }
-  }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    if (token) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user?.role == "admin") {
+        window.location.href = "/dashboard";
+      } else if (user?.role == "manager" || user?.role == "employee") {
+        window.location.href = "/home";
+      } else {
+        window.location.href = "/shop";
+      }
+    }
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -67,7 +70,6 @@ function Login() {
           >
             YoYo's Club
           </Typography>
-
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="Email"
