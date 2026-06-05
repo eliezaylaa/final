@@ -7,19 +7,19 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("access");
-    if (token) {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user?.role == "admin") {
-        window.location.href = "/dashboard";
-      } else if (user?.role == "manager" || user?.role == "employee") {
-        window.location.href = "/home";
-      } else {
-        window.location.href = "/shop";
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("access");
+  //   if (token) {
+  //     const user = JSON.parse(localStorage.getItem("user"));
+  //     if (user?.role == "admin") {
+  //       window.location.href = "/dashboard";
+  //     } else if (user?.role == "manager" || user?.role == "employee") {
+  //       window.location.href = "/home";
+  //     } else {
+  //       window.location.href = "/shop";
+  //     }
+  //   }
+  // }, []);
 
   const handleLogin = async () => {
     try {
