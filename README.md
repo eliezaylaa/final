@@ -1,7 +1,9 @@
 # final
 
 YOYO'CKUB CLUB ADMIN DASHBOARD full stack web
-
+LINK
+Backend: https://yoyos-club-backend.onrender.com
+Frontend: https://final-m997.onrender.com
 STACK
 Frontend : REact + Vite + MUI
 Backend: Node.js + Express
@@ -30,4 +32,4 @@ With Docker
 Poduction
 docker-compose up backend frontend db --build
 Deveopment
-docekr compose up backend-dev fortnedn-dev db --build
+docker compose up backend-dev fortnedn-dev db --build
